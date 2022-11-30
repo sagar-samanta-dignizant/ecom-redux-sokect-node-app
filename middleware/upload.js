@@ -1,5 +1,8 @@
 const multer = require("multer")
 var path = require("path")
+const { dirname } = require("path")
+const appDir = dirname(require.main.filename)
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "/temp/public")

@@ -7,7 +7,7 @@ const bodyParser = require("body-parser")
 const userRouter = require("./route/user")
 const productRouter = require("./route/product")
 
-app.use(bodyParser.urlencoded())
+app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
 
@@ -23,6 +23,7 @@ mongoose
 
 app.use("/user", userRouter)
 app.use("/Product", productRouter)
+app.use((req, res, next) => {})
 
 app.listen(3000, () => {
   console.log("Server running..")

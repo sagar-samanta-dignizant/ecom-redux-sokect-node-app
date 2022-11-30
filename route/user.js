@@ -5,11 +5,15 @@ const {
   updateUser,
   deleteUser,
   login,
+  getAllProduct,
+  getAllUserProduct,
 } = require("../controllers/user")
+const { authentication } = require("../middleware/authentication")
 const router = express()
 
 //get user data
 router.get("/:userId", getUserDetails)
+
 //register user
 router.post("/register", registerUser)
 router.post("/login", login)
