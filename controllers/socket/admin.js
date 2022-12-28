@@ -5,19 +5,16 @@ const {
   sendProductEvents,
   updateProductEvents,
   deleteProductEvents,
-  viewProductEvents,
   sendCreatedCupon,
 } = require("../../socket/actions")
 const bcrypt = require("bcryptjs")
 const { generateToken } = require("../../middleware/authentication")
 const Cupon = require("../../models/cupon")
-const { DateTime } = require("luxon")
 const moment = require("moment/moment")
 exports.login = async (data) => {
   try {
     const { email, password } = data
     if (!(email && password)) {
-      // return httpError(res, 400, "Email and password are required!")
     }
     const user = await User.findOne({ email })
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -27,13 +24,8 @@ exports.login = async (data) => {
         user,
         token,
       }
-      // return res.status(200).send({ user, token })
     }
-    // return httpError({
-    //   response: res,
-    //   statusCode: 400,
-    //   message: "Invalid Credentials",
-    // })
+
     console.log("Invalid credentials")
   } catch (error) {
     console.log(error)
@@ -66,9 +58,6 @@ exports.updateProduct = async (data) => {
     if (!product) {
       console.log("product not found")
     }
-    // if (product.createdBy !== data.requestUserId) {
-    //   return console.log("Not authenticate")
-    // }
     const updatePro = await Product.findByIdAndUpdate(
       { _id: data.id },
       {

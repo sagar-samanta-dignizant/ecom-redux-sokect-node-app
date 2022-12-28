@@ -11,7 +11,6 @@ exports.registerUser = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() })
     }
-    // Validate user input
     if (!(email && name && password)) {
       return httpError({
         response: res,
@@ -125,7 +124,7 @@ exports.deleteUser = async (req, res) => {
     })
   }
 }
-exports.getAnyProduct = async (req, res) => {
+exports.getAnyProduct = async (_, res) => {
   try {
     const products = await Product.find()
     res.status(200).send({ product: products })
