@@ -1,20 +1,33 @@
 const User = require("../models/user")
 const bcrypt = require("bcryptjs")
 const { generateToken } = require("../middleware/authentication")
-
+const { httpError } = require("../utils/error")
+const { validationResult } = require("express-validator/check")
+const Product = require("../models/product")
 exports.registerUser = async (req, res) => {
   try {
-    const { name, email, address, password } = req.body
-
+    const { name, email, password } = req.body
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() })
+    }
     // Validate user input
     if (!(email && name && password)) {
-      return res.status(400).send("Email,Name and Password can't be empty!")
+      return httpError({
+        response: res,
+        statusCode: 402,
+        message: "Email,Name and Password can't be empty!",
+      })
     }
 
     const oldUser = await User.findOne({ email })
 
     if (oldUser) {
-      return res.status(409).send("User Already Exist")
+      return httpError({
+        response: res,
+        statusCode: 409,
+        message: "User Already Exist!",
+      })
     }
     const encryptedPassword = await bcrypt.hash(password, 10)
     const newUser = new User({ ...req.body, password: encryptedPassword })
@@ -25,9 +38,10 @@ exports.registerUser = async (req, res) => {
       user,
     })
   } catch (error) {
-    console.log(error)
-    res.status(500).send({
-      message: "Server error",
+    return httpError({
+      response: res,
+      statusCode: 500,
+      message: "server error",
     })
   }
 }
@@ -35,7 +49,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body
     if (!(email && password)) {
-      res.status(400).send("Email and password are required!")
+      return httpError(res, 400, "Email and password are required!")
     }
     const user = await User.findOne({ email })
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -43,10 +57,18 @@ exports.login = async (req, res) => {
       user.token = token
       return res.status(200).send({ user, token })
     }
-    res.status(400).send("Invalid Credentials")
+    return httpError({
+      response: res,
+      statusCode: 400,
+      message: "Invalid Credentials",
+    })
   } catch (error) {
     console.log(error)
-    res.status(500).send("Server error")
+    return httpError({
+      response: res,
+      statusCode: 500,
+      message: "server error",
+    })
   }
 }
 
@@ -88,12 +110,30 @@ exports.updateUser = async (req, res) => {
 }
 exports.deleteUser = async (req, res) => {
   try {
+    const errors = validationResult(req)
+    console.log(errors)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() })
+    }
     await User.findByIdAndDelete({ _id: req.params.userId })
     res.status(200).send({ message: "Successfull" })
   } catch (error) {
-    console.log(error)
-    res.status(500).send({
-      message: "Server error",
+    return httpError({
+      response: res,
+      statusCode: 500,
+      message: error.message,
+    })
+  }
+}
+exports.getAnyProduct = async (req, res) => {
+  try {
+    const products = await Product.find()
+    res.status(200).send({ product: products })
+  } catch (error) {
+    return httpError({
+      response: res,
+      statusCode: 500,
+      message: "server error",
     })
   }
 }

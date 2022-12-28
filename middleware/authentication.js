@@ -6,18 +6,36 @@ exports.generateToken = async (user) => {
   })
   return token
 }
-exports.authentication = (req, res, next) => {
-  const token =
-    req.body.token || req.query.token || req.headers["x-access-token"]
+exports.authenticate = async (token) => {
   if (!token) {
-    return res.status(403).send("A token is required for authentication")
+    return console.log("No token")
   }
   try {
     const decoded = jwt.verify(token, process.env.TOKEN_KEY)
-    req.user = decoded
+    return decoded
   } catch (error) {
-    console.log(error)
-    return res.status(401).send("Invalid Token")
+    console.log("Invaid token")
   }
-  return next()
 }
+// exports.authentication = (req, res, next) => {
+//   const token =
+//     req.body.token ||
+//     req.query.token ||
+//     req.headers["x-access-token"] ||
+//     req.headers["Authorization"]
+//   if (!token) {
+//     return res.status(403).send({
+//       message: "A token is required for authentication",
+//     })
+//   }
+//   try {
+//     const decoded = jwt.verify(token, process.env.TOKEN_KEY)
+//     req.user = decoded
+//   } catch (error) {
+//     console.log(error)
+//     return res.status(401).send({
+//       message: "Invalid Token",
+//     })
+//   }
+//   return next()
+// }

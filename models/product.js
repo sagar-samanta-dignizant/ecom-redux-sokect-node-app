@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const productSchema = mongoose.Schema({
-  userId: {
+  createdBy: {
     type: String,
     trim: true,
     require: true,
@@ -13,10 +13,7 @@ const productSchema = mongoose.Schema({
     type: String,
     trim: true,
   },
-  quantity: {
-    type: Number,
-    trim: true,
-  },
+
   price: {
     type: Number,
     trim: true,
@@ -24,6 +21,24 @@ const productSchema = mongoose.Schema({
   isAvailable: {
     type: Boolean,
     default: false,
+  },
+  companyName: {
+    type: String,
+    trim: true,
+  },
+  category: {
+    type: String,
+    trim: true,
+  },
+
+  description: {
+    type: String,
+    trim: true,
+  },
+  quantity: {
+    type: Number,
+    trim: true,
+    default: 1,
   },
 })
 const Product = mongoose.model("Product", productSchema)

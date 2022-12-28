@@ -5,9 +5,10 @@ const appDir = dirname(require.main.filename)
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "/temp/public")
+    cb(null, "/sagar/Product-cart-demo-app/API/public")
   },
   filename: function (req, file, cb) {
+    console.log("file", file)
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
     cb(
       null,

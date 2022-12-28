@@ -19,10 +19,13 @@ const userSchema = mongoose.Schema({
     trim: true,
     require: true,
   },
-  type: {
+  role: {
     type: String,
     trim: true,
-    default: "Admin",
+    default: "USER",
+  },
+  cartId: {
+    type: String,
   },
 })
 
